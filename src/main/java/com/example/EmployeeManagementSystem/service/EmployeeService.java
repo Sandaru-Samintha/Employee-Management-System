@@ -30,5 +30,14 @@ public class EmployeeService {
             return VarList.RSP_SUCCESS;
         }
     }
+    public String updateEmployee(EmployeeDto employeeDto){
+        if(employeeRepository.existsById(employeeDto.getEmpID())){
+            employeeRepository.save(modelMapper.map(employeeDto,Employee.class));
+            return VarList.RSP_SUCCESS;
+        }
+        else{
+          return VarList.RSP_NO_DATA_FOUND;
+        }
+    }
 
 }
