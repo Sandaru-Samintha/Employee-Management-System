@@ -8,10 +8,7 @@ import com.example.EmployeeManagementSystem.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/v1/employee")
@@ -58,5 +55,35 @@ public class EmployeeController {
             return new ResponseEntity(responseDto,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/updateEmployee")
+    public ResponseEntity updateEmployee(@RequestBody EmployeeDto employeeDto){
+        try {
+            String res = employeeService.updateEmployee(employeeDto);
+            if(res.equals("00")) {
+               responseDto.setCode(VarList.RSP_SUCCESS);
+               responseDto.setMessage("Update The Employee");
+               responseDto.setContent(employeeDto);
+               return new ResponseEntity(responseDto,HttpStatus.ACCEPTED);
+           } else if (res.equals("01")) {
+                responseDto.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDto.setMessage("Not A Registered Employee");
+                responseDto.setContent(employeeDto);
+                return new ResponseEntity(responseDto,HttpStatus.BAD_REQUEST);
+            }
+            else {
+                responseDto.setCode(VarList.RSP_FAIL);
+                responseDto.setMessage("Error");
+                responseDto.setContent(null);
+                return new ResponseEntity(responseDto,HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception ex){
+            responseDto.setCode(VarList.RSP_FAIL);
+            responseDto.setMessage(ex.getMessage());
+            responseDto.setContent(null);
+            return new ResponseEntity(responseDto,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
